@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("Carrinho de compras")
 public class CarrinhoTest extends BaseTest {
-    
+
     private static final String BACKPACK = "sauce-labs-backpack";
 
     @Test
@@ -23,9 +23,8 @@ public class CarrinhoTest extends BaseTest {
         inventoryPage.adicionarAoCarrinho(BACKPACK);
 
         assertAll(
-            () -> assertEquals("Remove", inventoryPage.textoDoBotaoDeRemocao(BACKPACK)),
-            () -> assertEquals("1", inventoryPage.contadorDoCarrinho())
-        );
+                () -> assertEquals("Remove", inventoryPage.textoDoBotaoDeRemocao(BACKPACK)),
+                () -> assertEquals("1", inventoryPage.contadorDoCarrinho()));
     }
 
     @Test
@@ -38,9 +37,8 @@ public class CarrinhoTest extends BaseTest {
         inventoryPage.removerDoCarrinho(BACKPACK);
 
         assertAll(
-            () -> assertEquals("Add to cart", inventoryPage.textoDoBotaoDeAdicao(BACKPACK)),
-            () -> assertTrue(inventoryPage.contadorDoCarrinhoAusente(), "Contador ausente")
-        );
+                () -> assertEquals("Add to cart", inventoryPage.textoDoBotaoDeAdicao(BACKPACK)),
+                () -> assertTrue(inventoryPage.contadorDoCarrinhoAusente(), "Contador ausente"));
         CartPage cartPage = inventoryPage.abrirCarrinho();
         assertEquals(0, cartPage.quantidadeDeItens(), "O carrinho deveria estar vazio");
     }
