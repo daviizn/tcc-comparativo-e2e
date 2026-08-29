@@ -1,0 +1,34 @@
+# Selenium / Maven
+selenium/target/
+selenium/reports/
+*.class
+
+# Cypress
+cypress/node_modules/
+cypress/cypress/videos/
+cypress/cypress/screenshots/
+cypress/cypress/downloads/
+cypress/cypress/reports/
+
+# Playwright
+playwright/node_modules/
+playwright/test-results/
+playwright/playwright-report/
+playwright/blob-report/
+playwright/playwright/.cache/
+
+# Node
+node_modules/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
