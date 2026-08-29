@@ -24,11 +24,11 @@ public class InventoryPage extends BasePage {
     }
 
     private static By botaoDeAdicao(String produto) {
-        return By.cssSelector("[data-test='remove-" + produto + "']");
+        return By.cssSelector("[data-test='add-to-cart-" + produto + "']");
     }
 
     private static By botaoDeRemocao(String produto) {
-        return By.cssSelector("[data-test='add-to-cart-" + produto + "']");
+        return By.cssSelector("[data-test='remove-" + produto + "']");
     }
 
     public InventoryPage acessarDiretamente() {
