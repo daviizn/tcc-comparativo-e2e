@@ -40,4 +40,6 @@ export const test = base.extend<Paginas>({
         await expect(inventoryPage.lista).toBeVisible();
         await use(inventoryPage);
     },    
-})
+});
+
+export { expect } from '@playwright/test';
