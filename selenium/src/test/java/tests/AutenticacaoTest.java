@@ -1,5 +1,7 @@
 package tests;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,6 +13,11 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("Autenticação")
 public class AutenticacaoTest extends BaseTest {
+
+        private static final String BACKPACK = "sauce-labs-backpack";
+ 
+        private static final List<String> ROTAS_PROTEGIDAS =
+            List.of("/cart.html", "/checkout-step-one.html", "/checkout-complete.html");
 
     @Test
     @DisplayName("CT01 - Login com credencias validas")
@@ -85,5 +92,40 @@ public class AutenticacaoTest extends BaseTest {
         assertAll(
                 () -> assertTrue(loginPage.estaExibida(), "Tela de login apos acesso direto"),
                 () -> assertFalse(loginPage.urlAtual().contains("/inventory.html"), loginPage.urlAtual()));
+    }
+
+    @Test
+    @DisplayName("CT19 - Proteção de rotas internas sem sessão autenticada")
+    void deveBloquearAcessoDiretoAsRotasInternas() {
+        for (String rota : ROTAS_PROTEGIDAS) {
+            loginPage.acessarRota(rota);
+ 
+            assertAll(
+                    () -> assertTrue(loginPage.estaExibida(), "Deveria redirecionar para o login ao acessar " + rota),
+                    () -> assertEquals(
+                            "Epic sadface: You can only access '" + rota + "' when you are logged in.",
+                            loginPage.mensagemDeErro()),
+                    () -> assertFalse(loginPage.urlAtual().contains(rota), loginPage.urlAtual()),
+                    () -> assertTrue(loginPage.semDadosProtegidosVisiveis(),
+                            "Nao deveria exibir dados de produtos ou do carrinho em " + rota));
+        }
+    }
+ 
+    @Test
+    @DisplayName("CT20 - Isolamento do carrinho entre contas após encerramento de sessão")
+    void deveIsolarOCarrinhoEntreContas() {
+        InventoryPage inventoryPage = autenticar();
+        inventoryPage.adicionarAoCarrinho(BACKPACK);
+        assertEquals("1", inventoryPage.contadorDoCarrinho(), "Pré-condição: deveria ter 1 item no carrinho");
+ 
+        InventoryPage listagem = inventoryPage.sair().logarComo(USUARIO_PROBLEMA, SENHA_PADRAO);
+ 
+        assertTrue(listagem.estaExibida(), "A listagem de produtos deveria estar visivel");
+
+        assertFalse(listagem.contadorDoCarrinhoPresente(),
+                "DEF-01: o contador do carrinho nao deveria existir para a nova conta");
+        assertEquals("Add to cart", listagem.textoDoBotaoDeAdicao(BACKPACK));
+        assertEquals(0, listagem.abrirCarrinho().quantidadeDeItens(),
+                "DEF-01: o carrinho da nova conta deveria estar vazio");
     }
 }

@@ -10,6 +10,7 @@ import org.openqa.selenium.WebDriver;
 public class BaseTest {
 
     protected static final String USUARIO_PADRAO = "standard_user";
+    protected static final String USUARIO_PROBLEMA = "problem_user";
     protected static final String SENHA_PADRAO = "secret_sauce";
 
     protected WebDriver driver;

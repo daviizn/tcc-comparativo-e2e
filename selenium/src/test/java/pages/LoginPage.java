@@ -6,12 +6,16 @@ import org.openqa.selenium.WebElement;
 
 public class LoginPage extends BasePage {
 
-    private static final String URL = "https://www.saucedemo.com/";
+    private static final String BASE_URL = "https://www.saucedemo.com";
+    private static final String URL = BASE_URL + "/";
 
     private static final By CAMPO_USUARIO = By.cssSelector("[data-test='username']");
     private static final By CAMPO_SENHA = By.cssSelector("[data-test='password']");
     private static final By BOTAO_LOGIN = By.cssSelector("[data-test='login-button']");
     private static final By MENSAGEM_DE_ERRO = By.cssSelector("[data-test='error']");
+    private static final By LISTA_DE_PRODUTOS = By.cssSelector("[data-test='inventory-list']");
+    private static final By ITEM_DE_PRODUTO = By.cssSelector("[data-test='inventory-item']");
+    private static final By BADGE_DO_CARRINHO = By.cssSelector("[data-test='shopping-cart-badge']");
 
     public LoginPage(WebDriver driver) {
         super(driver);
@@ -20,6 +24,11 @@ public class LoginPage extends BasePage {
     public LoginPage acessar() {
         driver.get(URL);
         visivel(CAMPO_USUARIO);
+        return this;
+    }
+
+    public LoginPage acessarRota(String rota) {
+        driver.get(BASE_URL + rota);
         return this;
     }
 
@@ -34,7 +43,7 @@ public class LoginPage extends BasePage {
     }
 
     public InventoryPage entrar() {
-        clicar(BOTAO_LOGIN);
+        clicarEIr(BOTAO_LOGIN, LISTA_DE_PRODUTOS);
         return new InventoryPage(driver);
     }
 
@@ -63,6 +72,10 @@ public class LoginPage extends BasePage {
     public boolean camposDestacadosComErro() {
         return driver.findElement(CAMPO_USUARIO).getDomAttribute("class").contains("error")
                 && driver.findElement(CAMPO_SENHA).getDomAttribute("class").contains("error");
+    }
+
+    public boolean semDadosProtegidosVisiveis() {
+        return !estaPresente(ITEM_DE_PRODUTO) && !estaPresente(BADGE_DO_CARRINHO);
     }
     
 }
