@@ -10,5 +10,9 @@
     "invalido": {
         "usuario": "usuario_invalido",
         "senha": "senha_errada"
+    },
+    "problema": {
+        "usuario": "problem_user",
+        "senha": "secret_sauce"
     }
 }

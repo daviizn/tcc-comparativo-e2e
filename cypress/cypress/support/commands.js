@@ -15,3 +15,12 @@ Cypress.Commands.add('autenticar', () => {
         cy.preencherLogin(padrao.usuario, padrao.senha);
     });
 });
+
+Cypress.Commands.add('abrirDetalhes', (nome) => {
+    cy.contains('[data-test="inventory-item-name"]', nome).click();
+    cy.url().should('include', '/inventory-item.html');
+});
+
+Cypress.Commands.add('itensDoCarrinho', (campo) => {
+    return cy.get(`[data-test="cart-list"] [data-test="inventory-item-${campo}"]`);
+});

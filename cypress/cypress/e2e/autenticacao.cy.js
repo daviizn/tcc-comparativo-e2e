@@ -1,3 +1,8 @@
+const BACKPACK = 'sauce-labs-backpack';
+
+const ROTAS_PROTEGIDAS = ['/cart.html', '/checkout-step-one.html', '/checkout-complete.html'];
+
+
 describe("Autenticação", () => {
   beforeEach(function () {
     cy.fixture("usuarios").as("usuarios");
@@ -63,5 +68,40 @@ describe("Autenticação", () => {
     cy.visit('/inventory.html', { failOnStatusCode: false });
     cy.get('[data-test="login-button"]').should('be.visible');
     cy.url().should('not.include', '/inventory.html');
+  });
+
+  it('CT19 - Deve bloquear o acesso direto as rotas internas sem sessao', () => {
+    ROTAS_PROTEGIDAS.forEach((rota) => {
+      cy.visit(rota, { failOnStatusCode: false });
+ 
+      cy.get('[data-test="login-button"]').should('be.visible');
+      cy.get('[data-test="error"]').should(
+        'have.text',
+        `Epic sadface: You can only access '${rota}' when you are logged in.`,
+      );
+      cy.url().should('not.include', rota);
+      cy.get('[data-test="inventory-item"]').should('not.exist');
+      cy.get('[data-test="shopping-cart-badge"]').should('not.exist');
+    });
+  });
+ 
+  it('CT20 - Deve isolar o carrinho entre contas apos a troca de usuario', function () {
+    cy.autenticar();
+    cy.get(`[data-test="add-to-cart-${BACKPACK}"]`).click();
+    cy.get('[data-test="shopping-cart-badge"]').should('have.text', '1');
+ 
+    cy.get('#react-burger-menu-btn').click();
+    cy.get('[data-test="logout-sidebar-link"]').should('be.visible').click();
+    cy.get('[data-test="login-button"]').should('be.visible');
+    cy.preencherLogin(this.usuarios.problema.usuario, this.usuarios.problema.senha);
+ 
+    cy.get('[data-test="inventory-list"]').should('be.visible');
+    cy.url().should('include', '/inventory.html');
+ 
+    cy.get('[data-test="shopping-cart-badge"]').should('not.exist');
+    cy.get(`[data-test="add-to-cart-${BACKPACK}"]`).should('have.text', 'Add to cart');
+ 
+    cy.get('[data-test="shopping-cart-link"]').click();
+    cy.get('[data-test="cart-list"]').find('[data-test="inventory-item"]').should('have.length', 0);
   });
 });

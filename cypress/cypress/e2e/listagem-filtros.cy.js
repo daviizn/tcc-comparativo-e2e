@@ -13,4 +13,15 @@ describe('Listagem e filtros', () => {
             expect(nomes[0]).to.equal(decrescente[0]);
         });
     });
+
+    it('CT16 - Deve ordenar os produtos por preco crescente', () => {
+        cy.get('[data-test="product-sort-container"]').select('Price (low to high)');
+ 
+        cy.get('[data-test="inventory-item-price"]').then(($precos) => {
+            const valores = [...$precos].map((e) => Number(e.innerText.replace('$', '')));
+            const crescente = [...valores].sort((a, b) => a - b);
+            expect(valores).to.deep.equal(crescente);
+            expect(valores[0]).to.equal(Math.min(...valores));
+        });
+    });
 });
