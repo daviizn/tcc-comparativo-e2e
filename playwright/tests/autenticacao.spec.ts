@@ -1,5 +1,8 @@
 import { expect, test, USUARIOS } from '../fixtures/paginas';
 
+const BACKPACK = 'sauce-labs-backpack';
+const ROTAS_PROTEGIDAS = ['/cart.html', '/checkout-step-one.html', '/checkout-complete.html'];
+
 test.describe('Autenticacao', () => {
     test('CT01 - Deve realizar login com credenciais validas', async ({
         page,
@@ -105,6 +108,63 @@ test.describe('Autenticacao', () => {
             await autenticado.acessarDiretamente();
             await expect(loginPage.botaoLogin).toBeVisible();
             await expect(page).not.toHaveURL(/\/inventory\.html/);
+        });
+    });
+
+    test('CT19 - Deve bloquear o acesso direto as rotas internas sem sessao', async ({
+        page,
+        loginPage,
+        inventoryPage,
+        cartPage,
+    }) => {
+        for (const rota of ROTAS_PROTEGIDAS) {
+            await test.step(`Quando acessa diretamente ${rota} sem sessao autenticada`, async () => {
+                await loginPage.acessarRota(rota);
+            });
+ 
+            await test.step(`Entao volta para o login com a mensagem referente a ${rota}`, async () => {
+                await expect(loginPage.botaoLogin).toBeVisible();
+                await expect(loginPage.mensagemDeErro).toHaveText(
+                    `Epic sadface: You can only access '${rota}' when you are logged in.`,
+                );
+                await expect(page).not.toHaveURL(new RegExp(rota.replace('.', '\\.')));
+            });
+ 
+            await test.step('E nenhum dado de produto ou do carrinho e exibido', async () => {
+                await expect(inventoryPage.lista).toHaveCount(0);
+                await expect(cartPage.itens).toHaveCount(0);
+                await expect(inventoryPage.contadorDoCarrinho).toHaveCount(0);
+            });
+        }
+    });
+
+    test('CT20 - Deve isolar o carrinho entre contas apos a troca de usuario', async ({
+        page,
+        loginPage,
+        cartPage,
+        autenticado,
+    }) => {
+        await test.step('Dado que standard_user adicionou o Backpack ao carrinho', async () => {
+            await autenticado.adicionarAoCarrinho(BACKPACK);
+            await expect(autenticado.contadorDoCarrinho).toHaveText('1');
+        });
+ 
+        await test.step('Quando aciona Logout e entra com problem_user', async () => {
+            await autenticado.sair();
+            await expect(loginPage.botaoLogin).toBeVisible();
+            await loginPage.preencherLogin(USUARIOS.problema.usuario, USUARIOS.problema.senha);
+        });
+ 
+        await test.step('Entao a listagem de produtos e exibida', async () => {
+            await expect(autenticado.lista).toBeVisible();
+            await expect(page).toHaveURL(/\/inventory\.html/);
+        });
+ 
+        await test.step('E o carrinho da nova conta esta vazio', async () => {
+            await expect(autenticado.contadorDoCarrinho).toHaveCount(0);
+            await expect(autenticado.botaoDeAdicao(BACKPACK)).toHaveText('Add to cart');
+            await autenticado.abrirCarrinho();
+            await expect(cartPage.itens).toHaveCount(0);
         });
     });
 });

@@ -3,11 +3,13 @@ import { CartPage } from '../pages/cart.page'
 import { CheckoutPage } from '../pages/checkout.page'
 import { InventoryPage } from '../pages/inventory.page'
 import { LoginPage } from '../pages/login.page'
+import { ProductPage } from '../pages/product.page'
 
 export const USUARIOS = {
     padrao: { usuario: 'standard_user', senha: 'secret_sauce' },
     bloqueado: { usuario: 'locked_out_user', senha: 'secret_sauce' },
     invalido: { usuario: 'usuario_invalido', senha: 'senha_errada' },
+    problema: { usuario: 'problem_user', senha: 'secret_sauce' },
 };
 
 type Paginas = {
@@ -15,6 +17,7 @@ type Paginas = {
     inventoryPage: InventoryPage;
     cartPage: CartPage;
     checkoutPage: CheckoutPage;
+    productPage: ProductPage;
     autenticado: InventoryPage;
 };
 
@@ -33,6 +36,10 @@ export const test = base.extend<Paginas>({
 
     checkoutPage: async ({ page }, use) => {
         await use(new CheckoutPage(page));
+    },
+
+    productPage: async ({ page }, use) => {
+        await use(new ProductPage(page));
     },
     
     autenticado: async ({ loginPage, inventoryPage }, use) => {

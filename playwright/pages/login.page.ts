@@ -19,6 +19,10 @@ export class LoginPage {
         await this.page.goto('/');
     }
 
+    async acessarRota(rota: string): Promise<void> {
+        await this.page.goto(rota);
+    }
+
     async preencherLogin(usuario: string | null, senha: string | null): Promise<void> {
         if (usuario) await this.campoUsuario.fill(usuario);
         if (senha) await this.campoSenha.fill(senha);

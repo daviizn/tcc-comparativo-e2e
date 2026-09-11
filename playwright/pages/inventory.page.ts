@@ -4,6 +4,7 @@ export class InventoryPage {
     readonly page: Page;
     readonly lista: Locator;
     readonly nomeDosProtudos: Locator;
+    readonly precoDosProdutos: Locator;
     readonly contadorDoCarrinho: Locator;
     readonly linkDoCarrinho: Locator;
     readonly seletorDeOrdenacao: Locator;
@@ -14,6 +15,7 @@ export class InventoryPage {
         this.page = page;
         this.lista = page.locator('[data-test="inventory-list"]')
         this.nomeDosProtudos = page.locator('[data-test="inventory-item-name"]')
+        this.precoDosProdutos = page.locator('[data-test="inventory-item-price"]')
         this.contadorDoCarrinho = page.locator('[data-test="shopping-cart-badge"]')
         this.linkDoCarrinho = page.locator('[data-test="shopping-cart-link"]')
         this.seletorDeOrdenacao = page.locator('[data-test="product-sort-container"]')
@@ -45,12 +47,22 @@ export class InventoryPage {
         await this.linkDoCarrinho.click();
     }
 
+    async abrirDetalhes(nome: string): Promise<void> {
+        await this.nomeDosProtudos.filter({ hasText: nome }).click()
+        await this.page.locator('[data-test="back-to-products"]').waitFor();;
+    }
+
     async ordenarPor(rotulo: string): Promise<void> {
         await this.seletorDeOrdenacao.selectOption({ label: rotulo });
     }
 
     async listarNomes(): Promise<string[]> {
         return this.nomeDosProtudos.allInnerTexts();
+    }
+
+    async listarPrecos(): Promise<number[]> {
+        const precos = await this.precoDosProdutos.allInnerTexts();
+        return precos.map((preco) => Number(preco.replace('$', '')));
     }
 
     async sair(): Promise<void> {
