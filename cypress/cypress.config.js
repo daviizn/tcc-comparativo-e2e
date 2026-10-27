@@ -9,7 +9,7 @@ module.exports = defineConfig({
     charts: true,
     embeddedScreenshots: true,
     inlineAssets: true,
-    saveAllAttempts: false,
+    saveAllAttempts: true,
     overwrite: true,
     html: true,
     json: true,
@@ -20,16 +20,20 @@ module.exports = defineConfig({
     supportFile: 'cypress/support/e2e.js',
     fixturesFolder: 'cypress/fixtures',
     testIsolation: true,
-    video: false,
-    // video: true, // rodada de evidencias
+
+    video: true,
     videosFolder: 'cypress/videos',
+    videoCompression: 32,
     screenshotOnRunFailure: true,
     screenshotsFolder: 'cypress/screenshots',
+
     viewportWidth: 1280,
     viewportHeight: 720,
     defaultCommandTimeout: 8000,
     pageLoadTimeout: 60000,
-    retries: 0,
+
+    retries: { runMode: 2, openMode: 0 },
+
     setupNodeEvents(on, config) {
       require('cypress-mochawesome-reporter/plugin')(on);
     },
