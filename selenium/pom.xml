@@ -48,20 +48,8 @@
                 <version>${surefire.version}</version>
                 <configuration>
                     <reportsDirectory>${project.basedir}/reports</reportsDirectory>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>${surefire.version}</version>
-                <configuration>
-                    <outputDirectory>${project.basedir}/reports/html</outputDirectory>
-                    <outputName>index</outputName>
-                    <reportsDirectories>
-                        <reportsDirectory>${project.basedir}/reports</reportsDirectory>
-                    </reportsDirectories>
-                    <linkXRef>false</linkXRef>
-                    <showSuccess>true</showSuccess>
+                    <disableXmlReport>true</disableXmlReport>
+                    <useFile>false</useFile>
                 </configuration>
             </plugin>
         </plugins>

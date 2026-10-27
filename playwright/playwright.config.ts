@@ -5,11 +5,13 @@ export default defineConfig({
 
   fullyParallel: true,
 
+  workers: 1,
+
   forbidOnly: !!process.env.CI,
 
   retries: 0,
 
-  reporter: [['html', { open: 'never' }]],
+  reporter: [['list']],
 
   expect: { timeout: 8000 },
 
@@ -19,9 +21,8 @@ export default defineConfig({
     navigationTimeout: 60000,
 
     video: 'off',
-    // video: 'on', // rodada de evidencias
     trace: 'off',
-    screenshot: 'only-on-failure',
+    screenshot: 'off',
   },
 
   projects: [

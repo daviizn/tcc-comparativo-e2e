@@ -12,15 +12,18 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class BasePage {
     
-    protected static final Duration TIMEOUT = Duration.ofSeconds(20);
+    protected static final Duration TIMEOUT = Duration.ofSeconds(8);
     protected static final Duration TIMEOUT_CURTO = Duration.ofSeconds(2);
+    protected static final Duration TIMEOUT_DA_RETENTATIVA = Duration.ofSeconds(6);
     protected final WebDriver driver;
     protected final WebDriverWait espera;
     protected final WebDriverWait esperaCurta;
+    protected final WebDriverWait esperaDaRetentativa;
     protected BasePage(WebDriver driver) {
         this.driver = driver;
         this.espera = new WebDriverWait(driver, TIMEOUT);
         this.esperaCurta = new WebDriverWait(driver, TIMEOUT_CURTO);
+        this.esperaDaRetentativa = new WebDriverWait(driver, TIMEOUT_DA_RETENTATIVA);
     }
 
     protected void clicarAteQue(By botao, ExpectedCondition<?> condicao) {
@@ -31,7 +34,7 @@ public class BasePage {
             if (estaPresente(botao)) {
                 clicar(botao);
             }
-            espera.until(condicao);
+            esperaDaRetentativa.until(condicao);
         }
     }
 
